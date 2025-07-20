@@ -20,7 +20,7 @@ Live-service games like *Apex Legends* rely on sustained player engagement. High
 ---
 
 ## Dataset
-- **Source:** [Kaggle - Apex Legends Season 15 Ranked Dataset](https://www.kaggle.com/)
+- **Source:** [[Kaggle - Apex Legends Season 15 Ranked Dataset](https://www.kaggle.com/)](https://www.kaggle.com/datasets/d8tary/apex-legends-season-15-ranked-dataset-raw)
 - **Contents:** Raw match logs with timestamps, player IDs, kills, assists, placements, session durations, and more.
 
 ---
