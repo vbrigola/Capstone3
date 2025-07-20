@@ -25,7 +25,7 @@ Live-service games like *Apex Legends* rely on sustained player engagement. High
 
 ---
 
-## Methodology
+## Project Workflow 
 
 ### 1. Data Wrangling
 - Cleaned missing values and duplicates.
