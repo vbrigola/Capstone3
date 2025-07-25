@@ -1,73 +1,68 @@
-# Retain the Legends: Using Game Data to Predict Player Churn 🎮
-
+# Retain the Legends: Predicting Player Churn in Apex Legends 🎮
 
 ## Overview
-This capstone project investigates player retention in *Apex Legends*, a popular free-to-play battle royale by Electronic Arts (EA). Using ranked match data, this project aims to predict player churn and identify key behavioral patterns that influence engagement. Insights are designed to support strategic decision-making for game designers, product managers, and monetization teams.
+This project addresses the challenge of player retention in *Apex Legends*, EA’s flagship battle royale. Using detailed ranked match data, I built machine learning models to predict which players are likely to churn and to reveal in-game behaviors most closely tied to retention. Insights generated here provide strategic guidance for design, product, and live ops teams—helping keep the Apex Legends community thriving.
 
----
 
 ## Problem Statement
-Live-service games like *Apex Legends* rely on sustained player engagement. High churn rates can negatively impact matchmaking, monetization, and community growth.  
-> **Core Question:** *What in-game behaviors contribute to a player's likelihood to remain engaged or churn?*
+Player retention is critical for live-service games. High churn disrupts matchmaking, community growth, and monetization.
+> **Main Question:** *What in-game behaviors most influence a player’s likelihood to churn or remain engaged, and how can we proactively predict churn?*
 
----
 
 ## Project Objectives
-- Build a machine learning model to classify players as retained or churned.
-- Identify top behavioral features driving retention.
-- Segment players into distinct behavioral groups using unsupervised learning.
+- Build a robust machine learning pipeline to classify players as retained or churned.
+- Identify and interpret the top behavioral predictors of retention.
+- Segment players into behavioral cohorts using unsupervised learning for more personalized engagement.
 
----
 
 ## Dataset
-- **Source:** [[Kaggle - Apex Legends Season 15 Ranked Dataset](https://www.kaggle.com/)](https://www.kaggle.com/datasets/d8tary/apex-legends-season-15-ranked-dataset-raw)
-- **Contents:** Raw match logs with timestamps, player IDs, kills, assists, placements, session durations, and more.
+- **Source:** [Kaggle - Apex Legends Season 15 Ranked Dataset](https://www.kaggle.com/datasets/d8tary/apex-legends-season-15-ranked-dataset-raw)
+- **Contents:** Match-by-match logs, player IDs, kills, assists, placements, session duration, and other engagement metrics.
 
 ---
 
-## Project Workflow 
+## Workflow Summary
 
-### 1. Data Wrangling
-- Cleaned missing values and duplicates.
+### 1. Data Wrangling & Feature Engineering
+- Cleaned and validated raw data (duplicates, missing values).
 - Parsed timestamps and engineered features:
-  - `match_count_last_30_days`
-  - `kill_death_ratio`
-  - `legend_diversity_score`
-  - `days_since_last_match`
-  - `avg_session_duration`
+    - `match_count_last_30_days`
+    - `kill_death_ratio`
+    - `legend_diversity_score`
+    - `days_since_last_match`
+    - `avg_session_duration`
+- Ensured no data leakage with careful splits and SMOTE for class balance.
 
 ### 2. Exploratory Data Analysis
-- Visualized distributions, correlation heatmaps, and churn-related trends.
-- Identified key patterns: players with low engagement variety and win rate had higher churn risk.
+- Visualized class imbalance, feature relationships, and churn trends.
+- Key patterns: players with low engagement variety, long inactivity, and poor match performance were most likely to churn.
 
-### 3. Modeling
-- **Algorithms Tested:**
-  - Logistic Regression
-  - Random Forest
-  - XGBoost (Best performer)
-- **Results:**
-  - **Accuracy:** `95%`
-  - **F1 Score:** `0.91`
-- SHAP used to explain top drivers of player churn.
+### 3. Modeling & Evaluation
+- **Algorithms tested:**
+    - Logistic Regression (baseline)
+    - Random Forest (ensemble, non-linear)
+    - XGBoost (best performer)
+- **Best Results (XGBoost):**
+    - **Accuracy:** 91%
+    - **F1 Score:** 0.84
+- Used SHAP for feature importance and transparency.
 
-### 4. Clustering (In Progress)
-- Used K-Means clustering to group players by behavior:
-  - Daily grinders
-  - Casuals
-  - Experimental players
-- PCA applied for 2D visualization of player types.
+### 4. Clustering & Segmentation (In Progress)
+- K-Means clustering to group players by behavioral traits:
+    - Daily Grinders
+    - Casuals
+    - Experimenters
+- Used PCA for 2D visualization.
 
----
 
 ## Tools & Technologies
-- Python (Pandas, NumPy, Scikit-learn, XGBoost)
-- SHAP (Explainability)
-- Matplotlib & Seaborn (Visualization)
-- Jupyter Notebook
+- **Python:** pandas, numpy, scikit-learn, XGBoost
+- **Visualization:** matplotlib, seaborn
+- **Explainability:** SHAP
+- **Jupyter Notebook**
 
----
 
-## Key Features Used
+## Key Features Engineered
 - `kill_death_ratio`
 - `session_frequency`
 - `legend_switching_behavior`
@@ -75,11 +70,26 @@ Live-service games like *Apex Legends* rely on sustained player engagement. High
 - `win_rate`
 - `match_placement_consistency`
 
----
 
-## Results Summary
-- The **XGBoost model** delivered strong predictive performance.
-- Feature importance insights:
-  - Churn risk increases with long inactivity gaps, low K/D, and repetitive gameplay patterns.
-- Results provide actionable insight for retention-based gameplay tuning.
+## Results & Insights
+- **XGBoost provided the best performance** on test data.
+- **Top churn predictors:**
+    - Long inactivity gaps
+    - Low K/D ratio
+    - Repetitive, low-variety play
+- **Business value:**
+    - Supports targeted player interventions and retention campaigns.
+    - Informs game design and balance decisions with actionable data.
+
+
+## Next Steps
+- Finalize player segmentation and integrate findings into dashboards.
+- Deploy churn prediction in EA’s live analytics pipeline.
+- Retrain models with each new season to capture evolving meta/trends.
+
+
+## Project Value
+This project offers a practical, data-driven blueprint for increasing retention in live-service games.
+**EA’s Apex Legends team can use these results to reduce churn, enhance engagement, and maximize player lifetime value—helping the game (and its community) continue to grow.**
+
 
