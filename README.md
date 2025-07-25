@@ -58,7 +58,6 @@ Player retention is critical for live-service games. High churn disrupts matchma
 ## Tools & Technologies
 - **Python:** pandas, numpy, scikit-learn, XGBoost
 - **Visualization:** matplotlib, seaborn
-- **Explainability:** SHAP
 - **Jupyter Notebook**
 
 
