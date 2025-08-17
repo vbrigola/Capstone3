@@ -1,94 +1,57 @@
-# Retain the Legends: Predicting Player Churn in Apex Legends 🎮
+# Retain the Legends: Predicting Player Churn in Apex Legends (Season 15) 🎮
 
-## Overview
-This project addresses the challenge of player retention in *Apex Legends*, EA’s flagship battle royale. Using detailed ranked match data, I built machine learning models to predict which players are likely to churn and to reveal in-game behaviors most closely tied to retention. Insights generated here provide strategic guidance for design, product, and live ops teams—helping keep the Apex Legends community thriving.
+> **TL;DR**: I built an early-warning churn classifier for **Apex Legends – Season 15** that flags likely churners **one week early**. After fixing leakage, a **tuned Logistic Regression** gives the most reliable **recall** on the churn class—exactly what EA needs for pre-day-7 interventions.
 
+## Problem
+**Churn = 7 days of inactivity.** My goal is to predict churn **a week in advance** and identify the behaviors that move retention so Live Ops/design can intervene before players lapse.
 
-## Problem Statement
-Player retention is critical for live-service games. High churn disrupts matchmaking, community growth, and monetization.
-> **Main Question:** *What in-game behaviors most influence a player’s likelihood to churn or remain engaged, and how can we proactively predict churn?*
+## Data
+- **Scope**: Ranked match logs from **Season 15** (placements, session timing, legend usage, combat stats).
+- **Target**: Binary `churn` (1 if inactive ≥7 days).
 
+## Pipeline (high level)
+1. **Wrangling & Features**
+   - Cleaned types/dupes; separated predictors `X` and label `y`.
+   - **Cadence features**: `days_since_last_match`, `session_frequency` (7-day), `legend_diversity` (7-day), `match_duration`, `avg_kills`, plus `placement`.
+   - **One-hots already present** for `map_*` and `legend_*`; `cat_cols = []` → no new dummies.
+2. **Scaling & Split**
+   - `StandardScaler` on numeric features.
+   - **Stratified 80/20** split → `X_train` **(399 × 121)**, `X_test` **(100 × 121)**.
+3. **Imbalance**
+   - **SMOTE = diagnostics only** (previewed to 50/50 from `{0:283, 1:116}`); **training uses original distribution**.
 
-## Project Objectives
-- Build a robust machine learning pipeline to classify players as retained or churned.
-- Identify and interpret the top behavioral predictors of retention.
-- Segment players into behavioral cohorts using unsupervised learning for more personalized engagement.
+## Modeling & Selection
+- Tried: **Logistic Regression (baseline & tuned)**, **Random Forest**, **XGBoost**.
+- **Selection rule**: maximize **F1 → PR AUC → ROC AUC** (recall-first policy for early warning).
 
+### Test Metrics (S15)
+| Model | Accuracy | F1 | Precision | Recall (churn) | PR AUC | ROC AUC |
+|---|---:|---:|---:|---:|---:|---:|
+| **Logistic Regression — tuned** | **0.37** | **0.47** | **0.31** | **0.97** | **0.304** | **0.516** |
+| Random Forest — current | 0.55 | 0.24 | – | 0.24 | – | 0.413 |
+| XGBoost — current | 0.62 | 0.27 | – | 0.24 | – | 0.492 |
 
-## Dataset
-- **Source:** [Kaggle - Apex Legends Season 15 Ranked Dataset](https://www.kaggle.com/datasets/d8tary/apex-legends-season-15-ranked-dataset-raw)
-- **Contents:** Match-by-match logs, player IDs, kills, assists, placements, session duration, and other engagement metrics.
+**LR-tuned hyperparams**: `penalty='l1'`, `C=0.1`, `solver='liblinear'`, `max_iter=1000`, `random_state=42`.
 
+## What actually drives retention
+**Cadence > combat.** The strongest signals are **`days_since_last_match`**, **`session_frequency`**, **`legend_diversity`**, **`match_duration`** (with **`avg_kills`** secondary).
 
+## What EA can do with this (actionable)
+- **Day-5/6 nudges**: trigger outreach as `days_since_last_match` approaches 7.
+- **Cadence goals**: simple, one-session tasks (e.g., “play 2 matches today,” “return tomorrow”).
+- **Legend variety**: weekly “try 2 legends” prompts to lift `legend_diversity`.
+- **Ranked placement micro-goals**: near-term placement targets to sustain momentum.
 
-## Workflow Summary
+## Why recall-first
+Missing a soon-to-churn player is expensive. I **prioritize recall** (catch ~**97%** of churners) and accept lower precision; EA can tune the operating threshold by campaign.
 
-### 1. Data Wrangling & Feature Engineering
-- Cleaned and validated raw data (duplicates, missing values).
-- Parsed timestamps and engineered features:
-    - `match_count_last_30_days`
-    - `kill_death_ratio`
-    - `legend_diversity_score`
-    - `days_since_last_match`
-    - `avg_session_duration`
-- Ensured no data leakage with careful splits and SMOTE for class balance.
+## Notebooks & data
+- `2_PlayerRetention_DataWrangling.ipynb`
+- `3_PlayerRetention_EDA.ipynb`
+- `4_PlayerRetention_PreprocessingModeling.ipynb`
+- `ApexPlayerRetention_final.csv`
 
-### 2. Exploratory Data Analysis
-- Visualized class imbalance, feature relationships, and churn trends.
-- Key patterns: players with low engagement variety, long inactivity, and poor match performance were most likely to churn.
-
-### 3. Modeling & Evaluation
-- **Algorithms tested:**
-    - Logistic Regression (baseline)
-    - Random Forest (ensemble, non-linear)
-    - XGBoost (best performer)
-- **Best Results (XGBoost):**
-    - **Accuracy:** 91%
-    - **F1 Score:** 0.84
-- Used SHAP for feature importance and transparency.
-
-### 4. Clustering & Segmentation (In Progress)
-- K-Means clustering to group players by behavioral traits:
-    - Daily Grinders
-    - Casuals
-    - Experimenters
-- Used PCA for 2D visualization.
-
-
-## Tools & Technologies
-- **Python:** pandas, numpy, scikit-learn, XGBoost
-- **Visualization:** matplotlib, seaborn
-- **Jupyter Notebook**
-
-
-## Key Features Engineered
-- `kill_death_ratio`
-- `session_frequency`
-- `legend_switching_behavior`
-- `ranked_to_casual_mode_ratio`
-- `win_rate`
-- `match_placement_consistency`
-
-
-## Results & Insights
-- **XGBoost provided the best performance** on test data.
-- **Top churn predictors:**
-    - Long inactivity gaps
-    - Low K/D ratio
-    - Repetitive, low-variety play
-- **Business value:**
-    - Supports targeted player interventions and retention campaigns.
-    - Informs game design and balance decisions with actionable data.
-
-
-## Next Steps
-- Finalize player segmentation and integrate findings into dashboards.
-- Deploy churn prediction in EA’s live analytics pipeline.
-- Retrain models with each new season to capture evolving meta/trends.
-
-
-## Project Value
-This project offers a practical, data-driven blueprint for increasing retention in live-service games.
-**EA’s Apex Legends team can use these results to reduce churn, enhance engagement, and maximize player lifetime value—helping the game (and its community) continue to grow.**
-
-
+## Next steps
+- Threshold/cost calibration (precision–recall trade-offs by campaign).
+- Seasonal re-training and drift checks (apply to S16+).
+- Live A/B tests using the risk score to measure lift in 7-day return.
