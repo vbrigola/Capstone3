@@ -50,6 +50,8 @@ Missing a soon-to-churn player is expensive. I **prioritize recall** (catch ~**9
 - `3_PlayerRetention_EDA.ipynb`
 - `4_PlayerRetention_PreprocessingModeling.ipynb`
 - `ApexPlayerRetention_final.csv`
+- `FinalPresentation_ApexLegendsS15Churn.pdf`
+- `FinalReport_ApexLegendsS15.pdf`
 
 ## Next steps
 - Threshold/cost calibration (precision–recall trade-offs by campaign).
