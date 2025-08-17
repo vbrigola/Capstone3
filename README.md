@@ -1,6 +1,6 @@
 # Retain the Legends: Predicting Player Churn in Apex Legends (Season 15) 🎮
 
-> **TL;DR**: I built an early-warning churn classifier for **Apex Legends – Season 15** that flags likely churners **one week early**. After fixing leakage, a **tuned Logistic Regression** gives the most reliable **recall** on the churn class—exactly what EA needs for pre-day-7 interventions.
+> I built an early-warning churn classifier for **Apex Legends – Season 15** that flags likely churners **one week early**. After fixing leakage, a **tuned Logistic Regression** gives the most reliable **recall** on the churn class—exactly what EA needs for pre-day-7 interventions.
 
 ## Problem
 **Churn = 7 days of inactivity.** My goal is to predict churn **a week in advance** and identify the behaviors that move retention so Live Ops/design can intervene before players lapse.
